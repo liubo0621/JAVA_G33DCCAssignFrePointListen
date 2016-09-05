@@ -58,9 +58,9 @@ public class DealTask implements Runnable{
 
 	public void doTask(){
 		System.out.println("***********do task + "+ grapId + "***********");
-//		//更新数据库接收机状态
-//		updateReceiverStatus(receiverIp, receiverPort, Constance.Reveiver.BUSY);
-//		updateGrapTaskStatus(grapId, Constance.Task.DOING);
+		//更新数据库接收机状态
+		updateReceiverStatus(receiverIp, receiverPort, Constance.Reveiver.BUSY);
+		updateGrapTaskStatus(grapId, Constance.Task.DOING);
 		
 		String beginTime = tools.getCurrentTime();
 		String localFilePath = Config.LOCAL_SAVE_PATH  + frequence + "\\" + tools.getCurrentDay() +"\\" + beginTime + ".wav";
@@ -70,24 +70,24 @@ public class DealTask implements Runnable{
 		//调频 截频 c++实现
 		doTask(controllerAddr, receiverIp, receiverPort, Integer.parseInt(frequence), localFilePath, fileTotalTime);
 		
-//		//更新数据库接收机状态
-//		updateReceiverStatus(receiverIp, receiverPort, Constance.Reveiver.FREE);
-//		updateGrapTaskStatus(grapId, Constance.Task.DONE);
+		//更新数据库接收机状态
+		updateReceiverStatus(receiverIp, receiverPort, Constance.Reveiver.FREE);
+		updateGrapTaskStatus(grapId, Constance.Task.DONE);
 		
 		String endTime = tools.getCurrentTime();
 		String fileName = beginTime + "_" + tools.getCurrentTime() + ".wav";
 		
 		String startT = tools.formatDate(beginTime);
 		String endT = tools.formatDate(endTime);
-		String path = frequence + "\\" + tools.getCurrentDay() +"\\";
+		String path = frequence + "\\" + tools.getCurrentDay() +"\\" + beginTime + "_" + tools.getCurrentTime() + ".wav";
 		String remoteSavePath = serverPath + path;
 		
 		//拷贝文件到远程 并插入到文件表中
-		if(tools.cpSrcFileToDestFile(localFilePath, remoteSavePath + beginTime + "_" + tools.getCurrentTime() + ".wav")){
-//			 String sql = "insert into tab_file (file_id,file_name, start_time,end_time ,freq_id, sto_id, sto_path, score_status, task_id, grap_id) " +
-//		              "values(seq_global.nextval,'"+fileName+"', to_date('"+startT+"','yyyy-mm-dd hh24:mi:ss'),to_date('"+endT+"','yyyy-mm-dd hh24:mi:ss'),"+freqId+",2,'"+path+"',70,"+taskId+","+grapId+")";
-//			 CRUD crud = new CRUD();
-//			 crud.instert(sql);
+		if(tools.cpSrcFileToDestFile(localFilePath, remoteSavePath)){
+			 String sql = "insert into tab_file (file_id,file_name, start_time,end_time ,freq_id, sto_id, sto_path, score_status, task_id, grap_id) " +
+		              "values(seq_global.nextval,'"+fileName+"', to_date('"+startT+"','yyyy-mm-dd hh24:mi:ss'),to_date('"+endT+"','yyyy-mm-dd hh24:mi:ss'),"+freqId+",2,'"+path+"',70,"+taskId+","+grapId+")";
+			 CRUD crud = new CRUD();
+			 crud.instert(sql);
 		}
 	}
 	
@@ -120,7 +120,7 @@ public class DealTask implements Runnable{
 	}
 	
 	public static void main(String[] args) {
-		DealTask dealTask = new DealTask("D:\\G33DDCfile_server\\", "06230000", "11D28423", 0, 10, 0, 0, 0);
+		DealTask dealTask = new DealTask("D:\\G33DDCfile_server\\", "06030000", "11D28423", 0, 30, 0, 0, 0);
 		new Thread(dealTask).start();
 		
 //		DealTask dealTask2 = new DealTask("D:\\G33DDCfile_server\\", "06220000", "11D28423", 1, 10, 0, 0, 0);
