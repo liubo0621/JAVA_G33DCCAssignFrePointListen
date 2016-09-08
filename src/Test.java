@@ -1,6 +1,5 @@
 import com.db.operation.CRUD;
 import com.util.Constance;
-import com.util.Log;
 
 
 /**
