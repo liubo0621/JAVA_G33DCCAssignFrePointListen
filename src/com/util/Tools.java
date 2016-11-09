@@ -13,7 +13,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+
 public class Tools {
+	
 	public static Tools getTools(){
 		return new Tools();
 	}
@@ -308,8 +310,12 @@ public class Tools {
     static Properties pps = new Properties();
     static{
 		try {
-			String path = Thread.currentThread().getContextClassLoader().getResource("gafpl.properties").getPath();
-			pps.load(new FileInputStream(path));
+			if (Config.RUN_ON_MYECLIPSE) {
+				String path = Thread.currentThread().getContextClassLoader().getResource("gafpl.properties").getPath();
+				pps.load(new FileInputStream(path));				
+			}else{
+				pps.load(new FileInputStream("config/gafpl.properties"));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
